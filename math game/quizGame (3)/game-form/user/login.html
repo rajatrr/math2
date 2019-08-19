@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="../assets/js/script.js"></script>
+</head>
+<body>
+	<div class="login-form">
+		<h2>Login</h2>
+		<form id="login-form">
+			<div class="inner">
+				<h5>User name:</h5>
+				<input type="text" name="firstname">
+			</div>
+			<div class="inner">
+				<h5>Password:</h5>
+				<input type="password" name="password">
+			</div>
+			<div class="inner">
+				<input type="submit" class="button" value="Submit">
+			</div>
+			<div class="inner text-center">
+				<a href="register.html">Register ?</a>
+			</div>
+		</form>
+	</div>
+	<script>
+		function validate(username, password){
+			var userregistration = JSON.parse(localStorage.getItem('userregistration'));
+			$(".validationMessage").empty();
+			if(username != userregistration.username){
+				$("input[name=firstname]").after("<span class='validationMessage' style='color:red;'>User name is incorrect</span>");
+				return false;
+			}
+			if(password != userregistration.password){
+				$("input[name=password]").after("<span class='validationMessage' style='color:red;'>Password is incorrect</span>");
+				return false;
+			}
+			return true;
+		}
+		$(document).on('submit','#login-form',function(e){
+			e.preventDefault();
+			var username = $("input[name=firstname]").val();
+			var password = $("input[name=password]").val();
+			if(validate(username, password) == true){
+				console.log('Login Successfull');
+				var userinfo = {
+						'username' : username,
+						'password' : password
+				}
+				localStorage.setItem("userinfo", JSON.stringify(userinfo));
+				window.location.href = 'profile.html';
+			}
+		})
+	</script>
+</body>
+</html>

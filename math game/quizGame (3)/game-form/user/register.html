@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="../assets/js/script.js"></script>
+</head>
+
+<body>
+    <div class="login-form">
+        <h2>Register</h2>
+        <form id="register-form">
+            <div class="inner">
+                <h5>User name:</h5>
+                <input type="text" name="firstname">
+            </div>
+            <div class="inner">
+                <h5>Password:</h5>
+                <input type="password" name="password">
+            </div>
+            <div class="inner">
+                <h5>Re-enter Password:</h5>
+                <input type="password" name="confirm-password">
+            </div>
+            <div class="inner">
+                <input type="submit" value="Register" class="button">
+            </div>
+            <div class="inner text-center">
+                <a href="login.html">login</a>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+	var registerValidate = (username, password, confirmPassword) => {
+		if(validation.empty(username, 'firstname', 'Username Cannot Be Blank') == false){
+			return false;
+		}
+		if(validation.empty(password, 'password', 'Password Cannot Be Blank') == false){
+			return false;
+		}
+		if(validation.minLength(username, 6, 'firstname', 'Username Should have min 6 characters') == false){
+			return false;
+		}
+		if(validation.minMaxLength(password, 6, 13, 'password', 'Password should have min 6 and maximum 13 chanracters') == false){
+			return false;
+		}
+		if(validation.patternMatch(password, '/^[a-zA-Z0-9?=.*!@#$%^&*_\-\s]+$/', 'password', 'Password should contain alpha numeric and one character') == false){
+			return false;
+		}
+		if(validation.same(password, confirmPassword, 'confirm-password', 'Password and confirm password should be same') == false){
+			return false;
+		}
+		return true;
+	} 
+	$(document).on('submit','#register-form',function(e){
+		e.preventDefault();
+		var username = $("input[name=firstname]").val();
+		var password = $("input[name=password]").val();
+		var confirmPassword = $("input[name=confirm-password]").val();
+		if(registerValidate(username, password, confirmPassword) == true){
+			var userregistration = {
+				'username' : username,
+				'password' : password
+			}
+			localStorage.setItem("userregistration", JSON.stringify(userregistration));
+			window.location.href = 'login.html';
+		}
+	})
+</script>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+	crossorigin="anonymous"></script>
+<script src="../assets/js/script.js"></script>
+</head>
+<body>
+	<div class="login-form">
+		<h2>
+			Hello <span id="username"></span>
+		</h2>
+		<a href="javacript:;" id="logout">Logout</a>
+		<a href="report.html">Result</a>
+		<h3>Game</h3>
+		<div>
+			<h2 id="question-title"></h2>
+			<div id="question-option-container"></div>
+			<input type="submit" value="submit" id="submit-question">
+		</div>
+
+	</div>
+</body>
+<script>
+var count = 1;
+var calculateResult = (selected, count) => {
+	var question = JSON.parse(localStorage.getItem(count - 1));
+	var rightAnswer = eval(question.title);
+	if(selected == rightAnswer){
+		console.log('Your answer is right');
+	}else{
+		var rCount = 1;
+		var result = JSON.parse(localStorage.getItem('results')) || [];
+		console.log(result);
+		if(result.length==0){
+			result.push(count-2)
+		}else{
+			result.push(count-2)
+		}
+		console.log(result);
+		localStorage.setItem('results',JSON.stringify(result));
+		alert('Ohh Man... You got a wrong answer... Better luck next time');
+		console.log('Your answer is wrong');
+		window.location.href = 'playgame.html';
+	}
+}
+$(document).on('click','#submit-question',function(e){
+	e.preventDefault();
+	count++;
+	submit(count);
+})
+var submit = (count) => {
+	var selected = $('[name="option"]:checked').val();
+	console.log(selected);
+	calculateResult(selected,count);
+	generateQuestion(count);
+}
+var getQuestion = (count,username) => {
+	var question = JSON.parse(localStorage.getItem(count));
+	$('#question-title').html(question.title);
+	var options = question.options;
+	var html = '';
+	$.each(options, function(key, value){
+		html += '<input type="radio" name="option" value="'+value+'">'+value+'</br>';
+	})	
+	$('#question-option-container').html(html);
+}
+function shuffleOperator(array) {
+	 var currentIndex = array.length, temporaryValue, randomIndex;
+	 // While there remain elements to shuffle...
+	 while (0 !== currentIndex) {
+	   // Pick a remaining element...
+	   randomIndex = Math.floor(Math.random() * currentIndex);
+	   currentIndex -= 1;
+	   // And swap it with the current element.
+	   temporaryValue = array[currentIndex];
+	   array[currentIndex] = array[randomIndex];
+	   array[randomIndex] = temporaryValue;
+	 }
+	 return array;
+}
+function getQuestionTitle (){
+	var operators = [
+		'+',
+		'-',
+		'*',
+		'/'
+	];
+	var a = Math.floor(Math.random() * 10);
+	var b = Math.floor(Math.random() * 10);
+	var operator = operators[Math.floor(Math.random() * operators.length)];
+	var randomOperators = shuffleOperator(operators);
+	console.log(randomOperators);
+	var options = [];
+	$.each(randomOperators, function(key, value){
+		var data =  a + value + b;
+		options.push( eval(data) );
+	});
+	return {
+		'title' : a   + operator +   b,
+		'options' : options
+	};
+}
+var generateQuestion = (count) => {
+	var userinfo = JSON.parse(localStorage.getItem('userinfo'));
+	var username = userinfo.username;
+	var questionTitle = getQuestionTitle();
+	var questions = {
+		'title' : questionTitle.title,
+		'options' : questionTitle.options
+	}
+	localStorage.setItem(count,JSON.stringify(questions));
+	getQuestion(count,username);
+}
+$(function(){
+	isAuthenticate();
+	generateQuestion(count);
+})
+
+</script>
+</html>
